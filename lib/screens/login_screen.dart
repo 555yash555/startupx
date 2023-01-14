@@ -37,15 +37,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   onChanged: (value) {
                     email = value;
                   },
-                  decoration: textfield_email_inputdecoration_lr),
+                  decoration: textfield_email_inputdecoration_lr.copyWith(
+                      hintText: 'Enter Your Phone')),
               SizedBox(
                 height: 8.0,
               ),
-              TextField(
-                  onChanged: (value) {
-                    password = value;
-                  },
-                  decoration: textfield_password_inputdecoration_lr),
               SizedBox(
                 height: 24.0,
               ),
@@ -57,27 +53,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 await login.login_with_phonenumber();
                 User? newuser = _auth.currentUser;
               }), 'sendotp'),
-              lrbutton(login_button_color, (() async {
-                loginservices login = loginservices(_auth, context, email);
-                setState(() {
-                  _saving = true;
-                });
-                await login.login_with_phonenumber();
-                User? newuser = _auth.currentUser;
-                setState(() {
-                  _saving = false;
-                });
-
-                if (newuser != null) {
-                  setState(() {
-                    _saving = false;
-                  });
-
-                  Navigator.restorablePushNamed(context, MyHomePage.pageid);
-                } else {
-                  Navigator.restorablePushNamed(context, LoginScreen.id);
-                }
-              }), 'Login'),
             ],
           ),
         ),

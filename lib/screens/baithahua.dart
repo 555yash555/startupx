@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../constants.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+import 'chat_screen.dart';
 
 class baitha extends StatefulWidget {
   static String pageid = 'baithahua';
@@ -64,10 +66,16 @@ class _baithaState extends State<baitha> {
                 itemBuilder: ((context, index) => TextButton(
                       style:
                           ButtonStyle(elevation: MaterialStateProperty.all(1)),
-                      onPressed: (() {
-                        _store
-                            .collection('orders')
-                            .add({'location': display.elementAt(index)});
+                      onPressed: (() async {
+                        _store.collection('orders').add({
+                          'location': display.elementAt(index),
+                          'receiverphone': _auth.currentUser?.phoneNumber,
+                          'status': 'disabled',
+                        }).then((value) => Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ChatScreen(value.id),
+                            )));
                       }),
                       child: Text(
                         display.elementAt(index),

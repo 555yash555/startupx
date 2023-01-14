@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:startupx/screens/chat_screen.dart';
 import '../constants.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -67,17 +68,45 @@ class _chalegaState extends State<chalega> {
               if (snapshot.hasData) {
                 var orders = snapshot.data!.docs;
                 for (var order in orders) {
-                  Widget f = TextButton(
-                    style: ButtonStyle(elevation: MaterialStateProperty.all(1)),
-                    onPressed: (() async {
-                      var id = order.reference.id;
-                      await _store.collection('orders').doc(id).delete();
-                    }),
-                    child: Text(
-                      order['location'],
-                    ),
-                  );
-                  text.add(f);
+                  if (order['status'] != 'enabled') {
+                    Widget f = TextButton(
+                      style:
+                          ButtonStyle(elevation: MaterialStateProperty.all(1)),
+                      onPressed: (() async {
+                        var id = order.reference.id;
+                        String? phonenumber = _auth.currentUser?.phoneNumber;
+                        await _store.collection('orders').doc(id).update({
+                          'status': 'enabled',
+                          'deliveryphone': phonenumber
+                        });
+
+                        await _store
+                            .collection('orders')
+                            .doc(id)
+                            .collection('messages')
+                            .add({
+                          "message": "ok",
+                          "sender": "ok",
+                          'created on': DateTime.now().millisecondsSinceEpoch,
+                        });
+
+                        _store.collection("cities").doc("LA").set({
+                          'status': 'enabled',
+                          'location': 'none',
+                        });
+                        await _store.collection('orders').doc("LA").delete();
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => ChatScreen(id),
+                            ));
+                      }),
+                      child: Text(
+                        order['location'],
+                      ),
+                    );
+                    text.add(f);
+                  }
                 }
               }
               return Expanded(

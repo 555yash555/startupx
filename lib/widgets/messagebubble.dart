@@ -19,25 +19,30 @@ class messagebubble extends StatelessWidget {
     return Padding(
         padding: EdgeInsets.all(10),
         child: Column(
-          crossAxisAlignment:
-              isme ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+          crossAxisAlignment: sender == "ok"
+              ? CrossAxisAlignment.center
+              : (isme ? CrossAxisAlignment.start : CrossAxisAlignment.end),
           children: [
             Text(
-              sender,
-              style: TextStyle(color: Colors.white38, fontSize: 12),
+              sender == "ok" ? "chat initiated" : sender,
+              style: (sender == "ok"
+                  ? TextStyle(color: Colors.white38, fontSize: 12)
+                  : TextStyle(color: Colors.white38, fontSize: 12)),
             ),
             Material(
                 borderRadius: BorderRadius.circular(30),
                 elevation: 10.0,
                 color: isme ? Colors.indigo.shade900 : Colors.teal,
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                  child: Text(
-                    '${text}',
-                    style: TextStyle(fontSize: 15),
-                  ),
-                )),
+                child: sender == 'ok'
+                    ? Text('')
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 20, vertical: 10),
+                        child: Text(
+                          '${text}',
+                          style: TextStyle(fontSize: 15),
+                        ),
+                      )),
             Text(
               DateTime.fromMillisecondsSinceEpoch(time).hour.toString() +
                   ':' +
